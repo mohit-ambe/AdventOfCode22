@@ -1,12 +1,12 @@
 file = open("input.txt", "r")
 myin = [line.strip() for line in file.readlines()]
 file.close()
-from ast import literal_eval
 from copy import deepcopy
+from functools import cmp_to_key
 
 
 def parse_list(s):
-    return [x for x in literal_eval(s)]
+    return [x for x in eval(s)]
 
 
 def compare(l, r):
@@ -39,23 +39,34 @@ def part_one():
         i += 3
     print(correct)
 
+def ccompare(l, r):
+    correct = compare(l, r)
+    if correct == True:
+        return -1
+    elif correct == False:
+        return 1
+    else:
+        return 0
+
 
 def part_two():
     packets = [parse_list(line) for line in myin if not line == ""]
     packets.extend([[[2]], [[6]]])
-    i = 0
-    while i < len(packets) - 1:
-        swapped = False
-        for j in range(len(packets) - i - 1):
-            if not compare(deepcopy(packets[j]), deepcopy(packets[j + 1])):
-                p = packets[j]
-                packets[j] = packets[j + 1]
-                packets[j + 1] = p
-                swapped = True
-        if not swapped:
-            break
-        else:
-            i += 1
+    # i = 0
+    # while i < len(packets) - 1:
+    #     swapped = False
+    #     for j in range(len(packets) - i - 1):
+    #         if not compare(deepcopy(packets[j]), deepcopy(packets[j + 1])):
+    #             p = packets[j]
+    #             packets[j] = packets[j + 1]
+    #             packets[j + 1] = p
+    #             swapped = True
+    #     if not swapped:
+    #         break
+    #     else:
+    #         i += 1
+
+    packets = sorted(packets.copy(), key=cmp_to_key(lambda l,r: ccompare(deepcopy(l),deepcopy(r))))
 
     print((packets.index([[2]]) + 1) * (packets.index([[6]]) + 1))
 
