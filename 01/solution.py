@@ -2,34 +2,28 @@ file = open("input.txt", "r")
 myin = [line.strip() for line in file.readlines()]
 file.close()
 
+left = [int(line.split("   ")[0]) for line in myin]
+right = [int(line.split("   ")[1]) for line in myin]
+left.sort()
+right.sort()
+
 
 def part_one():
-    max_cals = float('-inf')
-    cals = 0
-    for num in myin:
-        if num == "":
-            if cals > max_cals:
-                max_cals = cals
-            cals = 0
-        else:
-            cals += int(num)
-
-    print(max_cals)
+    print(sum([abs(left[i] - right[i]) for i in range(len(left))]))
 
 
 def part_two():
-    max_cals = [float('-inf'), float('-inf'), float('-inf')]
-    cals = 0
-    for num in myin:
-        if num == "":
-            if cals > max_cals[0]:
-                max_cals[0] = cals
-                max_cals.sort()
-            cals = 0
-        else:
-            cals += int(num)
+    score = 0
+    counter = {r: 0 for r in right}
 
-    print(sum(max_cals))
+    for r in right:
+        counter[r] += 1
+
+    for l in left:
+        if l in counter:
+            score += l * counter[l]
+
+    print(score)
 
 
 part_one()
